@@ -1,0 +1,6 @@
+# Logs
+*.log
+*.jou
+
+# Vivado generated files
+/vivado
