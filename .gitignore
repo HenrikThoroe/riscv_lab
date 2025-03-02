@@ -4,3 +4,5 @@
 
 # Vivado generated files
 /vivado
+/.Xil
+*.str
