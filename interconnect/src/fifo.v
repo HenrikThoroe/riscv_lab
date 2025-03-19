@@ -53,7 +53,7 @@ initial begin
 end
 
 always @(posedge clk) begin
-    if (!rst) begin
+    if (rst == 0) begin
         head <= 0;
         tail <= 0;
         count <= 0;

@@ -6,3 +6,9 @@
 /vivado
 /.Xil
 *.str
+
+# IP generated files
+*/ip/
+/ip/
+
+/.dev

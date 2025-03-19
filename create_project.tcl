@@ -12,14 +12,14 @@ set device_part "xc7z007sclg400-1"
 # Normalize the path to make sure it is correct
 set sources_dir [file normalize [file join $create_project_dir $project_name "src"]]
 set sim_dir [file normalize [file join $create_project_dir $project_name "sim"]]
-set constrs_dir [file normalize [file join $create_project_dir $project_name "constrs"]]
+set constrs_dir [file normalize [file join $create_project_dir $project_name "constr"]]
 
 ################################################################################
 
 exec mkdir -p $project_directory_base
 
 # Create the project in the default directory
-create_project $vivado_project_name $vivado_project_dir -part $device_part
+create_project $vivado_project_name $vivado_project_dir -part $device_part -force
 
 #set_property board_part avnet.com:zedboard:part0:1.4 [current_project] ;# ZedBoard Zynq Evaluation Kit
 #set_property board_part digilentinc.com:zybo-z7-20:part0:1.2 [current_project] ;# Zybo Z7-20
@@ -41,5 +41,5 @@ if {[file exists $sim_dir]} {
 
 # Add constraints
 if {[file exists $constrs_dir]} {
-    add_files -scan_for_includes -fileset constrs_1 $contrs_dir
+    add_files -scan_for_includes -fileset constrs_1 $constrs_dir
 }

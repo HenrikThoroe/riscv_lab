@@ -43,11 +43,14 @@ module pipeline_stage_interconnect
     input wire rst
 );
 
-wire full;
-wire empty;
+wire full_c;
+wire full_d;
 
-assign axis_s_data_tready = ~full;
-assign axis_m_data_tvalid = ~empty;
+wire empty_d;
+wire empty_c;
+
+assign axis_s_data_tready = ~(full_d & full_c);
+assign axis_m_data_tvalid = ~(empty_d & empty_c);
 
 fifo #(
     .DATA_WIDTH(DATA_WIDTH),
@@ -57,8 +60,8 @@ fifo #(
     .write_enable(axis_s_data_tvalid),
     .data_out(axis_m_data_tdata),
     .read_enable(axis_m_data_tready),
-    .empty(empty),
-    .full(full),
+    .empty(empty_d),
+    .full(full_d),
     .clk(clk),
     .rst(rst)
 );
@@ -71,8 +74,8 @@ fifo #(
     .write_enable(axis_s_data_tvalid),
     .data_out(ctrl_data_o),
     .read_enable(axis_m_data_tready),
-    .empty(empty),
-    .full(full),
+    .empty(empty_c),
+    .full(full_c),
     .clk(clk),
     .rst(rst)
 );
