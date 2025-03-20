@@ -11,7 +11,7 @@ set create_project_dir [file normalize [file join [file dirname [info script]]  
 source $create_project_dir/create_project.tcl
 
 update_compile_order -fileset sources_1
-ipx::package_project -root_dir /home/henrik/lab/riscv/memory_access/ip -vendor xilinx.com -library user -taxonomy /UserIP -import_files -set_current false -version 1.57
+ipx::package_project -root_dir /home/henrik/lab/riscv/memory_access/ip -vendor xilinx.com -library user -taxonomy /UserIP -import_files -set_current false -version 1.60
 ipx::unload_core /home/henrik/lab/riscv/memory_access/ip/component.xml
 ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory /home/henrik/lab/riscv/memory_access/ip /home/henrik/lab/riscv/memory_access/ip/component.xml
 update_compile_order -fileset sources_1

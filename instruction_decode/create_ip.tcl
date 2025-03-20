@@ -13,7 +13,7 @@ source $create_project_dir/create_project.tcl
 update_compile_order -fileset sources_1
 set_property source_mgmt_mode None [current_project]
 set_property top top_wrapper [current_fileset]
-ipx::package_project -root_dir /home/henrik/lab/riscv/instruction_decode/ip -vendor xilinx.com -library user -taxonomy /UserIP -import_files -set_current false -version 2.61
+ipx::package_project -root_dir /home/henrik/lab/riscv/instruction_decode/ip -vendor xilinx.com -library user -taxonomy /UserIP -import_files -set_current false -version 2.63
 ipx::unload_core /home/henrik/lab/riscv/instruction_decode/ip/component.xml
 ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory /home/henrik/lab/riscv/instruction_decode/ip /home/henrik/lab/riscv/instruction_decode/ip/component.xml
 set_property top top_wrapper [current_fileset]

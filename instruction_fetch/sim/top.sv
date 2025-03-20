@@ -9,7 +9,6 @@ reg jmp_en;
 reg [15:0] jmp;
 wire [15:0] pc;
 
-
 task empty;
     begin
         assert(pc == 0) else $error("When the fetch stage is empty, pc has to be zero.");
@@ -31,20 +30,16 @@ task reset;
     end
 endtask;
 
-
 initial begin
     clk <= 0;
     forever #1 clk <= ~clk;
 end
 
 top_wrapper dut (
-    .ctrl_data_o(),
-    .axis_m_data_tvalid(),
-    .axis_m_data_tready(),
-    .axis_m_data_tdata(inst),
-    .pc(pc),
-    .jmp(jmp),
-    .jmp_enable(jmp_en),
+    .o_instruction(inst),
+    .o_process_counter(pc),
+    .i_jmp_address(jmp),
+    .i_en_jmp(jmp_en),
     .clk(clk),
     .rst(rst)
 );
@@ -59,23 +54,6 @@ initial begin
     repeat (1) @(posedge clk);
     assert(inst == 32'b00000000000000000000000000010011) else $error("The instruction is not correct.");
     assert(pc == 8) else $error("The pc is not correct, it is %d.", pc);
-
-    // jmp_en <= 1;
-    // jmp <= 0;
-    // repeat (1) @(posedge clk);
-    // assert(inst == 0) else $error("The instruction is not correct.");
-    // assert(pc == 0) else $error("The pc is not correct, it is %d.", pc);
-
-    // jmp_en <= 0;
-    // jmp <= 32;
-    // repeat (1) @(posedge clk);
-    // assert(pc == 4) else $error("The pc is not correct, it is %d.", pc);
-
-    // repeat (1) @(posedge clk);
-    // assert(pc == 8) else $error("The pc is not correct, it is %d.", pc);
-
-    // repeat (1) @(posedge clk);
-    // assert(pc == 12) else $error("The pc is not correct, it is %d.", pc);
 
     repeat (10) @(posedge clk);
     $finish;

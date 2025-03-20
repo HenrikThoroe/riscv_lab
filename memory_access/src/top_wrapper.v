@@ -1,108 +1,73 @@
 `timescale 1ns / 1ps
 
 module top_wrapper
-#(
-    parameter SIZE = 128
-)
 (
-    // input wire [16:0] ctrl_data_i,
 
-    // output wire axis_m_data_tvalid,
-    // input wire axis_m_data_tready,
-    // output wire [31:0] axis_m_data_tdata,
+    input wire [31:0] i_address,
+    input wire [31:0] i_data,
+    output wire [31:0] o_data,
+    input wire i_enable_read,
+    input wire i_enable_write,
 
-    // input wire axis_s_data_tvalid,
-    // output wire axis_s_data_tready,
-    // input wire [31:0] axis_s_data_tdata,
+    output wire [31:0] o_dma_read_0,
+    output wire [31:0] o_dma_read_1,
+    input wire [31:0] i_dma_write,
 
-    // input wire axis_s_addr_tvalid,
-    // output wire axis_s_addr_tready,
-    // input wire [31:0] axis_s_addr_tdata,
-
-    // output wire axis_m_dma_tvalid,
-    // input wire axis_m_dma_tready,
-    // output wire [31:0] axis_m_dma_tdata,
-
-    // input wire axis_s_dma_tvalid,
-    // output wire axis_s_dma_tready,
-    // input wire [31:0] axis_s_dma_tdata,
-
-    input wire [31:0] adr,
-    input wire [31:0] data_i,
-    output wire [31:0] data_o,
-    input wire enable_read,
-    input wire enable_write,
-
-    // input wire [31:0] ifc1_adr,
-    // input wire [31:0] ifc1_data_i,
-    // output wire [31:0] ifc1_data_o,
-    // input wire ifc1_enable_write,
-
-    output wire [31:0] dma_read,
-    input wire [31:0] dma_write,
-
-    output reg write_to_reg,
-    input wire write_to_reg_i,
-    output reg [4:0] dst_reg,
-    input wire [4:0] dst_reg_i,
+    output reg o_write_to_reg,
+    input wire i_write_to_reg,
+    output reg [4:0] o_dst_reg,
+    input wire [4:0] i_dst_reg,
 
     input wire clk,
     input wire rst
 );
 
-// reg [31:0] dma_o; 
-
-reg [31:0] mem [SIZE-1:0];
+reg [31:0] mem [127:0];
 reg [31:0] dma_0 = 0;
-// reg [31:0] dma_1 = 0;
+reg [31:0] dma_1 = 0;
 reg [31:0] main_mem;
 integer i = 0;
 
-assign data_o = main_mem;
-assign dma_read = dma_0;
+assign o_data = main_mem;
+assign o_dma_read_0 = dma_0;
+assign o_dma_read_1 = dma_1;
 
 always @ (posedge clk) begin
     if (!rst) begin
         main_mem <= 0;
-        write_to_reg <= 0;
-        dst_reg <= 0;
+        o_write_to_reg <= 0;
+        o_dst_reg <= 0;
         dma_0 <= 0;
-        for (i = 0; i < SIZE; i = i + 1) begin
+        dma_1 <= 0;
+        for (i = 0; i < 128; i = i + 1) begin
             mem[i] <= 0;
         end
     end else begin
-        write_to_reg <= write_to_reg_i;
-        dst_reg <= dst_reg_i;
+        o_write_to_reg <= i_write_to_reg;
+        o_dst_reg <= i_dst_reg;
 
-        if (enable_read) begin
-            if (adr == 1)
-                main_mem <= dma_write;
+        if (i_enable_read) begin
+            if (i_address == 0)
+                main_mem <= i_dma_write;
             else
-                main_mem <= mem[adr];
+                main_mem <= mem[i_address];
         end else begin
-            main_mem <= adr;
+            main_mem <= i_address;
         end
 
-        if (enable_write) begin 
-            mem[adr] <= data_i;
+        if (i_enable_write) begin 
+            mem[i_address] <= i_data;
         end
 
-        if (adr == 0 && enable_write == 1) 
-            dma_0 <= data_i;
+        if (i_address == 1 && i_enable_write == 1) 
+            dma_0 <= i_data;
         else
             dma_0 <= dma_0;
-            
 
-        // if (adr == 0 && enable_write) begin
-        //     dma_0 <= data_i;
-        //     mem[adr] <= mem[adr];
-        // end else begin 
-        //     dma_0 <= dma_0;
-        //     if (enable_write == 1'b1) 
-        //         mem[adr] <= data_i;
-        //     else
-        //         mem[adr] <= mem[adr];
-        // end
+        if (i_address == 2 && i_enable_write == 1) 
+            dma_1 <= i_data;
+        else
+            dma_1 <= dma_1;
     end
 end
 
